@@ -1,0 +1,58 @@
+<launch> 
+
+    <param name="robot_description" textfile="$(find custom_robot)/urdf/camera_urdf.xacro" /> 
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch"> 
+
+     
+
+    </include> 
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" /> 
+
+
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" 
+
+        args="-param robot_description -urdf -model custom_bot" /> 
+
+    1 
+
+    <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop_twist_keyboard" output="screen"/> 
+
+    <node pkg="rviz" type="rviz" name="rviz"/> 
+
+ 
+
+    <node pkg="gmapping" type="slam_gmapping" name="gmapping"> 
+
+      <param name="base_frame" value="base_link" /> 
+
+      <param name="odom_frame" value="odom" /> 
+
+      <param name="delta" value="0.1" /> 
+
+    </node> 
+
+     
+
+    <node pkg="move_base" type="move_base" name="move_base" output="screen"> 
+
+      <param name="controller_frequency" value="10.0" /> 
+
+      <rosparam file="$(find custom_robot)/config/costmap_common_params.yaml" command="load" ns="global_costmap"/> 
+
+      <rosparam file="$(find custom_robot)/config/costmap_common_params.yaml" command="load" ns="local_costmap"/> 
+
+      <rosparam file="$(find custom_robot)/config/local_costmap_params.yaml" command="load" /> 
+
+      <rosparam file="$(find custom_robot)/config/global_costmap_params.yaml" command="load" /> 
+
+      <rosparam file="$(find custom_robot)/config/trajectory_planner.yaml" command="load" /> 
+
+    </node> 
+
+ 
+
+ 
+
+</launch> 
